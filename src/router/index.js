@@ -216,7 +216,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('/user-manger/'),
+  history: createWebHistory(),
   routes
 })
 
