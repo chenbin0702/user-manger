@@ -6,22 +6,8 @@
         <el-icon><Refresh /></el-icon>更新评分
       </el-button>
     </div>
-
-    <!-- 信用评分概览卡片 -->
-    <el-row :gutter="20" class="credit-overview">
-      <el-col :span="6" v-for="item in creditOverview" :key="item.level">
-        <el-card :class="['credit-card', item.class]" shadow="hover">
-          <div class="credit-card-content">
-            <div class="credit-level">{{ item.level }}</div>
-            <div class="credit-count">{{ item.count }}家</div>
-            <div class="credit-range">信用分：{{ item.range }}</div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 搜索栏 -->
-    <el-card class="search-card">
+ <!-- 搜索栏 -->
+     <el-card class="search-card">
       <el-form :model="searchForm" inline class="search-form">
         <el-form-item label="合作商名称">
           <el-input 
@@ -54,6 +40,20 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <!-- 信用评分概览卡片 -->
+    <el-row :gutter="20" class="credit-overview">
+      <el-col :span="6" v-for="item in creditOverview" :key="item.level">
+        <el-card :class="['credit-card', item.class]" shadow="hover">
+          <div class="credit-card-content">
+            <div class="credit-level">{{ item.level }}</div>
+            <div class="credit-count">{{ item.count }}家</div>
+            <div class="credit-range">信用分：{{ item.range }}</div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+   
 
     <!-- 数据表格 -->
     <el-card class="table-card">

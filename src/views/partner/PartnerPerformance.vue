@@ -18,47 +18,9 @@
         </el-button>
       </div>
     </div>
-
-    <!-- 业绩概览卡片 -->
-    <el-row :gutter="20" class="overview-section">
-      <el-col :span="6" v-for="item in performanceOverview" :key="item.title">
-        <el-card class="overview-card" shadow="hover">
-          <div class="overview-content">
-            <div class="overview-header">
-              <div class="overview-icon" :class="item.type">
-                <el-icon><component :is="item.icon" /></el-icon>
-              </div>
-              <div class="overview-title">{{ item.title }}</div>
-              <div class="overview-badge" v-if="item.badge">
-                <el-tag :type="item.badge.type" size="small">{{ item.badge.text }}</el-tag>
-              </div>
-            </div>
-            <div class="overview-value">{{ item.value }}</div>
-            <div class="overview-chart">
-              <div class="chart-label">{{ item.chart.label }}</div>
-              <el-progress
-                :percentage="item.chart.percentage"
-                :color="item.chart.color"
-                :stroke-width="4"
-                :show-text="false"
-              />
-            </div>
-            <div class="overview-trend" :class="getTrendClass(item.trend)">
-              <span class="trend-value">{{ Math.abs(item.trend) }}%</span>
-              <span class="trend-label">较上月</span>
-              <el-icon>
-                <CaretTop v-if="item.trend > 0" />
-                <CaretBottom v-else />
-              </el-icon>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 主要内容区域 -->
-    <el-row :gutter="20" class="main-content">
-      <!-- 搜索栏 -->
+    
+    <el-row :gutter="20">
+         <!-- 搜索栏 -->
       <el-col :span="24">
         <el-card class="search-card">
           <el-form :model="searchForm" inline class="search-form">
@@ -110,6 +72,46 @@
           </el-form>
         </el-card>
       </el-col>
+    </el-row>
+    <!-- 业绩概览卡片 -->
+    <el-row :gutter="20" class="overview-section">
+      <el-col :span="6" v-for="item in performanceOverview" :key="item.title">
+        <el-card class="overview-card" shadow="hover">
+          <div class="overview-content">
+            <div class="overview-header">
+              <div class="overview-icon" :class="item.type">
+                <el-icon><component :is="item.icon" /></el-icon>
+              </div>
+              <div class="overview-title">{{ item.title }}</div>
+              <div class="overview-badge" v-if="item.badge">
+                <el-tag :type="item.badge.type" size="small">{{ item.badge.text }}</el-tag>
+              </div>
+            </div>
+            <div class="overview-value">{{ item.value }}</div>
+            <div class="overview-chart">
+              <div class="chart-label">{{ item.chart.label }}</div>
+              <el-progress
+                :percentage="item.chart.percentage"
+                :color="item.chart.color"
+                :stroke-width="4"
+                :show-text="false"
+              />
+            </div>
+            <div class="overview-trend" :class="getTrendClass(item.trend)">
+              <span class="trend-value">{{ Math.abs(item.trend) }}%</span>
+              <span class="trend-label">较上月</span>
+              <el-icon>
+                <CaretTop v-if="item.trend > 0" />
+                <CaretBottom v-else />
+              </el-icon>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <!-- 主要内容区域 -->
+    <el-row :gutter="20" class="main-content">
 
       <!-- 销售趋势图表 -->
       <el-col :span="8">

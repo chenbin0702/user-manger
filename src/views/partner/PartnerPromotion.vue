@@ -18,52 +18,9 @@
         </el-button>
       </div>
     </div>
-
-    <!-- 活动概览卡片 -->
-    <el-row :gutter="20" class="overview-section">
-      <el-col :span="6" v-for="item in promotionOverview" :key="item.title">
-        <el-card class="overview-card" shadow="hover">
-          <div class="overview-content">
-            <div class="overview-header">
-              <div class="overview-icon" :class="item.type">
-                <el-icon><component :is="item.icon" /></el-icon>
-              </div>
-              <div class="overview-title">{{ item.title }}</div>
-              <div class="overview-badge" v-if="item.badge">
-                <el-tag :type="item.badge.type" size="small">{{ item.badge.text }}</el-tag>
-              </div>
-            </div>
-            <div class="overview-value">{{ item.value }}</div>
-            <div class="overview-details">
-              <div class="detail-group">
-                <div class="detail-item">
-                  <div class="detail-icon" :class="item.detail1.type">
-                    <el-icon><component :is="item.detail1.icon" /></el-icon>
-                  </div>
-                  <div class="detail-content">
-                    <div class="detail-label">{{ item.detail1.label }}</div>
-                    <div class="detail-value" :class="item.detail1.type">{{ item.detail1.value }}</div>
-                  </div>
-                </div>
-                <div class="detail-item">
-                  <div class="detail-icon" :class="item.detail2.type">
-                    <el-icon><component :is="item.detail2.icon" /></el-icon>
-                  </div>
-                  <div class="detail-content">
-                    <div class="detail-label">{{ item.detail2.label }}</div>
-                    <div class="detail-value" :class="item.detail2.type">{{ item.detail2.value }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <!-- 主要内容区域 -->
-    <el-row :gutter="20" class="main-content">
-      <!-- 搜索栏 -->
+     
+    <el-row :gutter="20">
+        <!-- 搜索栏 -->
       <el-col :span="24">
         <el-card class="search-card">
           <el-form :model="searchForm" inline class="search-form">
@@ -117,7 +74,51 @@
           </el-form>
         </el-card>
       </el-col>
+    </el-row>
+    <!-- 活动概览卡片 -->
+    <el-row :gutter="20" class="overview-section">
+      <el-col :span="6" v-for="item in promotionOverview" :key="item.title">
+        <el-card class="overview-card" shadow="hover">
+          <div class="overview-content">
+            <div class="overview-header">
+              <div class="overview-icon" :class="item.type">
+                <el-icon><component :is="item.icon" /></el-icon>
+              </div>
+              <div class="overview-title">{{ item.title }}</div>
+              <div class="overview-badge" v-if="item.badge">
+                <el-tag :type="item.badge.type" size="small">{{ item.badge.text }}</el-tag>
+              </div>
+            </div>
+            <div class="overview-value">{{ item.value }}</div>
+            <div class="overview-details">
+              <div class="detail-group">
+                <div class="detail-item">
+                  <div class="detail-icon" :class="item.detail1.type">
+                    <el-icon><component :is="item.detail1.icon" /></el-icon>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">{{ item.detail1.label }}</div>
+                    <div class="detail-value" :class="item.detail1.type">{{ item.detail1.value }}</div>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-icon" :class="item.detail2.type">
+                    <el-icon><component :is="item.detail2.icon" /></el-icon>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">{{ item.detail2.label }}</div>
+                    <div class="detail-value" :class="item.detail2.type">{{ item.detail2.value }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
 
+    <!-- 主要内容区域 -->
+    <el-row :gutter="20" class="main-content">
       <!-- 活动效果分析 -->
       <el-col :span="16">
         <el-card class="chart-card">

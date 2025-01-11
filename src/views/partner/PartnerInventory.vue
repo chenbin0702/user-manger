@@ -18,7 +18,62 @@
         </el-button>
       </div>
     </div>
-
+    <el-row :gutter="20">
+         <!-- 搜索栏 -->
+         <el-col :span="24">
+        <el-card class="search-card">
+          <el-form :model="searchForm" inline class="search-form">
+            <el-form-item label="合作商">
+              <el-select 
+                v-model="searchForm.partnerId" 
+                placeholder="请选择合作商"
+                clearable
+                class="search-select"
+              >
+                <el-option
+                  v-for="partner in partnerOptions"
+                  :key="partner.id"
+                  :label="partner.name"
+                  :value="partner.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="商品类型">
+              <el-select 
+                v-model="searchForm.type" 
+                placeholder="请选择商品类型"
+                clearable
+                class="search-select"
+              >
+                <el-option label="设备" value="equipment" />
+                <el-option label="配件" value="parts" />
+                <el-option label="耗材" value="consumables" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="库存状态">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择库存状态"
+                clearable
+                class="search-select"
+              >
+                <el-option label="正常" value="normal" />
+                <el-option label="积压" value="overstock" />
+                <el-option label="短缺" value="shortage" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleSearch">
+                <el-icon><Search /></el-icon>查询
+              </el-button>
+              <el-button @click="resetSearch">
+                <el-icon><Refresh /></el-icon>重置
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
     <!-- 库存概览卡片 -->
     <el-row :gutter="20" class="overview-section">
       <el-col :span="6" v-for="item in overviewData" :key="item.title">
@@ -80,60 +135,6 @@
 
     <!-- 主要内容区域 -->
     <el-row :gutter="20" class="main-content">
-      <!-- 搜索栏 -->
-      <el-col :span="24">
-        <el-card class="search-card">
-          <el-form :model="searchForm" inline class="search-form">
-            <el-form-item label="合作商">
-              <el-select 
-                v-model="searchForm.partnerId" 
-                placeholder="请选择合作商"
-                clearable
-                class="search-select"
-              >
-                <el-option
-                  v-for="partner in partnerOptions"
-                  :key="partner.id"
-                  :label="partner.name"
-                  :value="partner.id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="商品类型">
-              <el-select 
-                v-model="searchForm.type" 
-                placeholder="请选择商品类型"
-                clearable
-                class="search-select"
-              >
-                <el-option label="设备" value="equipment" />
-                <el-option label="配件" value="parts" />
-                <el-option label="耗材" value="consumables" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="库存状态">
-              <el-select 
-                v-model="searchForm.status" 
-                placeholder="请选择库存状态"
-                clearable
-                class="search-select"
-              >
-                <el-option label="正常" value="normal" />
-                <el-option label="积压" value="overstock" />
-                <el-option label="短缺" value="shortage" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleSearch">
-                <el-icon><Search /></el-icon>查询
-              </el-button>
-              <el-button @click="resetSearch">
-                <el-icon><Refresh /></el-icon>重置
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </el-col>
 
       <!-- 库存列表 -->
       <el-col :span="24">
