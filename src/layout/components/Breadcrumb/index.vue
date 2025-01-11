@@ -4,76 +4,80 @@
     <div class="breadcrumb-container">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <template v-if="route.meta?.parentTitles">
+        <template v-for="(item, index) in breadcrumbList" :key="index">
           <el-breadcrumb-item 
-            v-for="(title, index) in route.meta.parentTitles" 
-            :key="index"
-            :to="{ path: route.meta.parentPaths[index] }"
+            :to="getRedirectPath(item, index)"
           >
-            {{ title }}
+            {{ item.meta?.title }}
           </el-breadcrumb-item>
         </template>
-        <el-breadcrumb-item>{{ currentTitle }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
-const currentTitle = computed(() => route.meta?.title || '')
 
-// 访问过的页面记录
-const visitedViews = ref([])
-
-// 添加访问记录
-const addVisitedView = (view) => {
-  if (visitedViews.value.some(v => v.path === view.path)) return
-  visitedViews.value.push({
-    name: view.name,
-    path: view.path,
-    title: view.meta?.title || 'unknown'
-  })
-}
-
-// 判断是否是当前激活的页面
-const isActive = (tag) => {
-  return tag.path === route.path
-}
-
-// 处理标签点击
-const handleClick = (tag) => {
-  router.push(tag.path)
-}
-
-// 处理标签关闭
-const handleClose = (view) => {
-  const index = visitedViews.value.indexOf(view)
-  if (index > -1) {
-    visitedViews.value.splice(index, 1)
+// 计算面包屑列表
+const breadcrumbList = computed(() => {
+  // 获取当前路由的matched数组
+  const matched = route.matched.filter(item => item.meta && item.meta.title)
+  
+  // 如果是仪表盘，不显示面包屑
+  if (matched.length === 1 && matched[0].name === 'Dashboard') {
+    return []
   }
   
-  // 如果关闭的是当前页面，则跳转到最后一个标签
-  if (isActive(view) && visitedViews.value.length) {
-    const latestView = visitedViews.value[visitedViews.value.length - 1]
-    router.push(latestView.path)
-  }
-}
+  // 过滤掉Layout
+  return matched.filter(item => item.name !== 'Layout')
+})
 
-// 监听路由变化，添加访问记录
-watch(
-  () => route.path,
-  () => {
-    addVisitedView(route)
-  },
-  {
-    immediate: true
+// 获取重定向路径
+const getRedirectPath = (item, index) => {
+  // 如果是最后一项，不需要跳转
+  if (index === breadcrumbList.value.length - 1) {
+    return ''
   }
-)
+  
+  // 查找路由配置
+  const findRoute = (routes, path) => {
+    for (const route of routes) {
+      if (route.path === path) {
+        return route
+      }
+      if (route.children) {
+        const found = findRoute(route.children, path)
+        if (found) return found
+      }
+    }
+    return null
+  }
+  
+  const currentRoute = findRoute(router.options.routes, item.path)
+  
+  // 如果有重定向，使用重定向路径
+  if (currentRoute?.redirect) {
+    return { path: currentRoute.redirect }
+  }
+  
+  // 如果有子路由，使用第一个子路由的路径
+  if (currentRoute?.children?.length) {
+    const firstChild = currentRoute.children[0]
+    return { 
+      path: firstChild.path.startsWith('/') 
+        ? firstChild.path 
+        : `${item.path}/${firstChild.path}`
+    }
+  }
+  
+  // 默认使用当前路径
+  return { path: item.path }
+}
 </script>
 
 <style scoped>
