@@ -2,13 +2,44 @@
   <div class="certificate-management">
     <div class="header">
       <h2>证书管理</h2>
-      <el-button type="primary" @click="handleAdd">新增证书类型</el-button>
+      <div class="actions">
+        <div class="search-bar">
+          <el-input
+            v-model="searchForm.keyword"
+            placeholder="搜索证书名称/编号"
+            clearable
+            @clear="handleSearch"
+            class="search-input"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
+          <el-select 
+            v-model="searchForm.status" 
+            placeholder="证书状态"
+            clearable
+            class="search-select"
+          >
+            <el-option label="启用" value="启用" />
+            <el-option label="禁用" value="禁用" />
+          </el-select>
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </div>
+        <el-button type="primary" @click="handleAdd">新增证书类型</el-button>
+      </div>
     </div>
 
-    <el-table :data="certificateList" style="width: 100%">
+    <el-table 
+      :data="certificateList" 
+      style="width: 100%"
+      v-loading="loading"
+      border
+    >
       <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="name" label="证书名称" width="180" />
-      <el-table-column prop="effectiveDate" label="生效日期" width="180">
+      <el-table-column prop="name" label="证书名称"  />
+      <!-- <el-table-column prop="effectiveDate" label="生效日期" width="180">
         <template #default="{ row }">
           {{ formatDate(row.effectiveDate) }}
         </template>
@@ -17,14 +48,14 @@
         <template #default="{ row }">
           {{ formatDate(row.expiryDate) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="issuingAuthority" label="发证机构" width="180" />
+      </el-table-column> -->
+      <el-table-column prop="issuingAuthority" label="发证机构"  />
       <el-table-column prop="status" label="状态" width="120">
         <template #default="{ row }">
           <status-tag :status="row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" >
         <template #default="{ row }">
           <el-button size="small" @click="handleEdit(row)">编辑</el-button>
           <el-button 
@@ -36,6 +67,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
 
     <!-- 证书表单对话框 -->
     <el-dialog
@@ -93,6 +136,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Search } from '@element-plus/icons-vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import { authService } from '@/services/authService'
 
@@ -149,6 +193,18 @@ const disableBeforeEffectiveDate = (time) => {
   const effectiveDate = new Date(form.value.effectiveDate)
   return time.getTime() < effectiveDate.getTime()
 }
+
+// 搜索表单
+const searchForm = ref({
+  keyword: '',
+  status: ''
+})
+
+// 分页参数
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+const loading = ref(false)
 
 onMounted(async () => {
   try {
@@ -207,11 +263,47 @@ const handleDelete = (row) => {
   })
 }
 
+// 处理搜索
+const handleSearch = () => {
+  currentPage.value = 1
+  loadData()
+}
+
+// 重置搜索
+const resetSearch = () => {
+  searchForm.value = {
+    keyword: '',
+    status: ''
+  }
+  handleSearch()
+}
+
+// 处理分页大小变化
+const handleSizeChange = (val) => {
+  pageSize.value = val
+  loadData()
+}
+
+// 处理页码变化
+const handleCurrentChange = (val) => {
+  currentPage.value = val
+  loadData()
+}
+
 const loadData = async () => {
+  loading.value = true
   try {
-    certificateList.value = await authService.getCertificates()
+    const { list, total: totalCount } = await authService.getCertificates({
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      ...searchForm.value
+    })
+    certificateList.value = list
+    total.value = totalCount
   } catch (error) {
     ElMessage.error('获取证书列表失败')
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -222,6 +314,30 @@ const loadData = async () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.search-select {
+  width: 160px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .dialog-footer {

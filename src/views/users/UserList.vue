@@ -23,6 +23,7 @@
     <el-table :data="filteredUsers" style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="username" label="用户名" width="120" />
+      <el-table-column prop="password" label="密码" width="120" />
       <el-table-column prop="name" label="姓名" width="120" />
       <el-table-column prop="email" label="邮箱" width="180" />
       <el-table-column prop="role" label="角色" width="120" />
@@ -83,6 +84,7 @@ const users = ref([
   {
     id: 1,
     username: 'admin',
+    password: '123456',
     name: '张三',
     email: 'admin@example.com',
     role: '管理员',
@@ -91,6 +93,7 @@ const users = ref([
   {
     id: 2,
     username: 'user1',
+    password: '123456',
     name: '李四',
     email: 'user1@example.com',
     role: '普通用户',

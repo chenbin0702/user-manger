@@ -2,16 +2,57 @@
   <div class="ad-positions">
     <div class="header">
       <h2>广告位管理</h2>
-      <el-button type="primary" @click="handleAdd">
-        <el-icon><Plus /></el-icon>新增广告位
-      </el-button>
+      <div class="actions">
+        <div class="search-bar">
+          <el-input
+            v-model="searchForm.keyword"
+            placeholder="搜索广告位名称/编码"
+            clearable
+            @clear="handleSearch"
+            class="search-input"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
+          <el-select 
+            v-model="searchForm.type" 
+            placeholder="广告类型"
+            clearable
+            class="search-select"
+          >
+            <el-option label="图片广告" value="image" />
+            <el-option label="视频广告" value="video" />
+            <el-option label="文字广告" value="text" />
+          </el-select>
+          <el-select 
+            v-model="searchForm.status" 
+            placeholder="状态"
+            clearable
+            class="search-select"
+          >
+            <el-option label="启用" value="启用" />
+            <el-option label="禁用" value="禁用" />
+          </el-select>
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+        </div>
+        <el-button type="primary" @click="handleAdd">
+          <el-icon><Plus /></el-icon>新增广告位
+        </el-button>
+      </div>
     </div>
 
     <!-- 广告位列表 -->
-    <el-table :data="positions" style="width: 100%">
-      <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="name" label="广告位名称" width="150" />
-      <el-table-column prop="code" label="广告位编码" width="150" />
+    <el-table 
+      :data="positions" 
+      v-loading="loading"
+      style="width: 100%"
+      border
+    >
+      <el-table-column prop="id" label="ID" min-width="80" />
+      <el-table-column prop="name" label="广告位名称" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="code" label="广告位编码" min-width="150" show-overflow-tooltip />
       <el-table-column prop="type" label="广告类型" width="120">
         <template #default="{ row }">
           <el-tag>{{ row.type }}</el-tag>
@@ -25,19 +66,19 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="描述" show-overflow-tooltip />
+      <el-table-column prop="description" label="描述" min-width="200" show-overflow-tooltip />
       <el-table-column prop="createTime" label="创建时间" width="180" />
       <el-table-column label="操作" width="250" fixed="right">
         <template #default="{ row }">
-          <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+          <el-button link type="primary" @click="handleEdit(row)">编辑</el-button>
           <el-button 
-            size="small" 
+            link
             :type="row.status === '启用' ? 'warning' : 'success'"
             @click="handleToggleStatus(row)">
             {{ row.status === '启用' ? '禁用' : '启用' }}
           </el-button>
           <el-button 
-            size="small" 
+            link
             type="danger" 
             @click="handleDelete(row)">
             删除
@@ -45,6 +86,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
 
     <!-- 广告位表单对话框 -->
     <el-dialog
@@ -99,7 +152,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 广告位数据
@@ -157,6 +210,19 @@ const rules = {
     { pattern: /^\d+x\d+$/, message: '尺寸格式不正确，例如：1920x1080', trigger: 'blur' }
   ]
 }
+
+// 搜索表单
+const searchForm = ref({
+  keyword: '',
+  type: '',
+  status: ''
+})
+
+// 分页参数
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+const loading = ref(false)
 
 // 新增广告位
 const handleAdd = () => {
@@ -228,9 +294,71 @@ const handleSubmit = async () => {
   })
 }
 
+// 处理搜索
+const handleSearch = () => {
+  currentPage.value = 1
+  loadData()
+}
+
+// 重置搜索
+const resetSearch = () => {
+  searchForm.value = {
+    keyword: '',
+    type: '',
+    status: ''
+  }
+  handleSearch()
+}
+
+// 处理分页大小变化
+const handleSizeChange = (val) => {
+  pageSize.value = val
+  loadData()
+}
+
+// 处理页码变化
+const handleCurrentChange = (val) => {
+  currentPage.value = val
+  loadData()
+}
+
 // 加载数据
 const loadData = () => {
-  // 实现数据加载逻辑
+  loading.value = true
+  try {
+    // 过滤数据
+    let filteredList = [...positions.value]
+    
+    if (searchForm.value.keyword) {
+      const keyword = searchForm.value.keyword.toLowerCase()
+      filteredList = filteredList.filter(item => 
+        item.name.toLowerCase().includes(keyword) ||
+        item.code.toLowerCase().includes(keyword) ||
+        item.description.toLowerCase().includes(keyword)
+      )
+    }
+    
+    if (searchForm.value.type) {
+      filteredList = filteredList.filter(item => 
+        item.type === searchForm.value.type
+      )
+    }
+    
+    if (searchForm.value.status) {
+      filteredList = filteredList.filter(item => 
+        item.status === searchForm.value.status
+      )
+    }
+    
+    // 计算分页
+    total.value = filteredList.length
+    const start = (currentPage.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    
+    positions.value = filteredList.slice(start, end)
+  } finally {
+    loading.value = false
+  }
 }
 
 onMounted(() => {
@@ -241,6 +369,8 @@ onMounted(() => {
 <style scoped>
 .ad-positions {
   padding: 20px;
+  background-color: #fff;
+  border-radius: 4px;
 }
 
 .header {
@@ -248,6 +378,51 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  h2 {
+    margin: 0;
+    font-weight: 500;
+    color: #303133;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  width: 220px;
+}
+
+.search-select {
+  width: 160px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+:deep(.el-table) {
+  --el-table-border-color: #ebeef5;
+  --el-table-header-bg-color: #f5f7fa;
+}
+
+:deep(.el-table th) {
+  font-weight: 600;
+  color: #303133;
+}
+
+:deep(.el-button--link) {
+  padding: 4px 8px;
+  font-size: 13px;
 }
 
 .dialog-footer {

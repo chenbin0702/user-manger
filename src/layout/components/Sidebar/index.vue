@@ -63,7 +63,9 @@
     Fold,
     Expand,
     TrendCharts,
-    Money
+    Money,
+    Menu,
+    Setting
   } from '@element-plus/icons-vue'
   import LogoIcon from '@/components/icons/LogoIcon.vue'
   
@@ -75,7 +77,9 @@
     Document,
     Reading,
     TrendCharts,
-    Money
+    Money,
+    Menu,
+    Setting
   }
   
   const props = defineProps({

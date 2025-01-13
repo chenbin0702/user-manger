@@ -46,12 +46,12 @@ export const constantRoutes = [
                 component: () => import('@/views/users/RoleConfig.vue'),
                 meta: { title: '角色配置' }
               },
-              {
-                path: 'permissions',
-                name: 'PermissionSettings',
-                component: () => import('@/views/users/PermissionSettings.vue'),
-                meta: { title: '权限设置' }
-              }
+              // {
+              //   path: 'permissions',
+              //   name: 'PermissionSettings',
+              //   component: () => import('@/views/users/PermissionSettings.vue'),
+              //   meta: { title: '权限设置' }
+              // }
             ]
           },
           {
@@ -386,6 +386,34 @@ export const constantRoutes = [
             name: 'PartnerCredit',
             component: () => import('@/views/partner/PartnerCredit.vue'),
             meta: { title: '合作商信用管理' }
+          }
+        ]
+      },
+      {
+        path: '/system',
+        redirect: '/system/menu',
+        meta: { 
+          title: '系统管理',
+          icon: 'Setting'
+        },
+        children: [
+          {
+            path: 'menu',
+            name: 'MenuManagement',
+            component: () => import('@/views/system/MenuManagement.vue'),
+            meta: { 
+              title: '菜单管理',
+              icon: 'Menu'
+            }
+          },
+          {
+            path: 'dict',
+            name: 'DictManagement',
+            component: () => import('@/views/system/DictManagement.vue'),
+            meta: { 
+              title: '字典管理',
+              icon: 'Collection'
+            }
           }
         ]
       }
