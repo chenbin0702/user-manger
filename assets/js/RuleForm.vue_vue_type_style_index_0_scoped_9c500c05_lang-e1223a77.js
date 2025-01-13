@@ -1,0 +1,1 @@
+import{f as t}from"./format-44ea9176.js";import{o as _,c as o,t as n,u as a}from"./index-58786321.js";const m={__name:"MoneyAmount",props:{amount:{type:Number,required:!0}},setup(e){return(r,s)=>(_(),o("span",null,"¥"+n(a(t)(e.amount)),1))}};export{m as _};
