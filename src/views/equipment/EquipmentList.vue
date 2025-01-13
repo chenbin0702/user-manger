@@ -38,6 +38,11 @@
       <el-table-column prop="code" label="设备编号" width="120" />
       <el-table-column prop="name" label="设备名称" width="180" />
       <el-table-column prop="categoryName" label="分类" width="120" />
+      <el-table-column prop="model" label="型号" width="120">
+        <template #default="{ row }">
+          <el-tag size="small" effect="plain">{{ row.model }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="specifications" label="规格参数" show-overflow-tooltip />
       <el-table-column prop="price" label="售价" width="120">
         <template #default="{ row }">

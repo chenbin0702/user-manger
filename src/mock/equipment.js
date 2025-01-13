@@ -57,6 +57,7 @@ export const mockEquipments = [
     categoryId: 11, 
     categoryName: '多旋翼无人机',
     specifications: '最大起飞重量：895g，最大飞行时间：46分钟',
+    model: 'Mavic 3',
     price: 12999,
     rentPrice: 299,
     status: '在库'
@@ -68,6 +69,7 @@ export const mockEquipments = [
     categoryId: 21,
     categoryName: '电池',
     specifications: '容量：5000mAh，电压：15.4V',
+    model: 'Mavic 3',
     price: 999,
     rentPrice: 49,
     status: '在库'

@@ -2,9 +2,9 @@
   <div class="inventory-management">
     <div class="header">
       <h2>设备库存管理</h2>
-      <el-button type="primary" @click="handleAdd">
+      <!-- <el-button type="primary" @click="handleAdd">
         <el-icon><Plus /></el-icon>新增库存
-      </el-button>
+      </el-button> -->
     </div>
 
     <!-- 搜索区域 -->
@@ -83,6 +83,8 @@
     <!-- 库存列表 -->
     <el-table :data="inventoryList" v-loading="loading" style="width: 100%">
       <el-table-column prop="name" label="设备名称" width="150" />
+      <!-- 设备分类 -->
+      <el-table-column prop="category" label="设备分类" width="120" />
       <el-table-column prop="model" label="型号" width="120" />
       <el-table-column prop="quantity" label="库存数量" width="100" />
       <el-table-column prop="minQuantity" label="最低库存" width="100" />
@@ -95,17 +97,17 @@
       <el-table-column prop="lastUpdate" label="最后更新" width="180" />
       <el-table-column label="操作" fixed="right" width="250">
         <template #default="{ row }">
-          <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+          <!-- <el-button size="small" @click="handleEdit(row)">编辑</el-button> -->
           <el-button size="small" type="success" @click="handleRecord(row)">
             变动记录
           </el-button>
-          <el-button 
+          <!-- <el-button 
             size="small" 
             type="danger" 
             @click="handleDelete(row)"
             :disabled="row.quantity > 0">
             删除
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -122,7 +124,7 @@
     />
 
     <!-- 新增/编辑表单对话框 -->
-    <el-dialog
+    <!-- <el-dialog
       v-model="dialogVisible"
       :title="isEdit ? '编辑库存' : '新增库存'"
       width="500px">
@@ -162,7 +164,7 @@
           <el-button type="primary" @click="handleSubmit">确定</el-button>
         </span>
       </template>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 变动记录对话框 -->
     <el-dialog

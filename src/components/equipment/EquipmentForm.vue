@@ -1,4 +1,3 @@
-```vue
 <template>
   <el-dialog
     v-model="dialogVisible"
@@ -25,6 +24,12 @@
             value: 'id'
           }"
           placeholder="请选择设备分类"
+        />
+      </el-form-item>
+      <el-form-item label="设备型号" prop="model">
+        <el-input 
+          v-model="form.model" 
+          placeholder="请输入设备型号"
         />
       </el-form-item>
       <el-form-item label="规格参数" prop="specifications">
@@ -92,6 +97,7 @@ const form = ref({
   code: '',
   name: '',
   categoryId: null,
+  model: '',
   specifications: '',
   price: 0,
   rentPrice: 0,
@@ -102,6 +108,10 @@ const rules = {
   code: [{ required: true, message: '请输入设备编号', trigger: 'blur' }],
   name: [{ required: true, message: '请输入设备名称', trigger: 'blur' }],
   categoryId: [{ required: true, message: '请选择设备分类', trigger: 'change' }],
+  model: [
+    { required: true, message: '请输入设备型号', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
   specifications: [{ required: true, message: '请输入规格参数', trigger: 'blur' }],
   price: [{ required: true, message: '请输入售价', trigger: 'blur' }],
   rentPrice: [{ required: true, message: '请输入租赁价格', trigger: 'blur' }],
